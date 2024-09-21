@@ -1,124 +1,103 @@
 import tkinter as tk
 from tkinter import PhotoImage
 import pygame
-from PIL import Image, ImageTk  # Importing Pillow for image resizing
 
-# Initialize pygame mixer
 pygame.mixer.init()
 
-# Load sound files
-keyboard0_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard0.wav")
-keyboard1_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard1.wav")
-keyboard2_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard2.wav")
-keyboard3_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard3.wav")
-keyboard4_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard4.wav")
-keyboard5_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard5.wav")
-keyboard6_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard6.wav")
-keyboard7_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard7.wav")
-keyboard8_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard8.wav")
-keyboard9_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard9.wav")
-meow_sound = pygame.mixer.Sound("E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/meow.wav")
+sound_files = {
+    "0": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard0.wav",
+    "1": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard1.wav",
+    "2": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard2.wav",
+    "3": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard3.wav",
+    "4": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard4.wav",
+    "5": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard5.wav",
+    "6": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard6.wav",
+    "7": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard7.wav",
+    "8": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard8.wav",
+    "9": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/keyboard9.wav",
+    "meow": "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/meow.wav"
+}
 
-# Create root window
+sounds = {key: pygame.mixer.Sound(file) for key, file in sound_files.items()}
+
 root = tk.Tk()
-root.geometry("800x361")  # Set the window size to 800x361 pixels
-root.title("Cat Piano")  # Set the title of the window
+root.geometry("800x361")
+root.title("Cat Piano")
 
-# Load the original background image
 original_bg_image = PhotoImage(file="E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/background.png")
+alternate_bg_image = PhotoImage(file="E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/alternate_background.png")
 
-# Load and resize the alternate background image using Pillow
-alternate_image_path = "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/alternate_background.png"
-alternate_img = Image.open(alternate_image_path)  # Open the image using Pillow
-alternate_img = alternate_img.resize((800, 361), Image.LANCZOS)  # Resize to 800x361
-alternate_bg_image = ImageTk.PhotoImage(alternate_img)  # Convert it to ImageTk for tkinter
+def switch_to_piano():
+    main_menu_frame.pack_forget()
+    background_label.config(image=original_bg_image)
+    piano_frame.pack(fill="both", expand=True)
 
-# Set initial background
-background_label = tk.Label(root, image=original_bg_image)
+def show_crazy_mode():
+    main_menu_frame.pack_forget()
+    crazy_frame.pack(fill="both", expand=True)
+
+def return_to_menu():
+    crazy_frame.pack_forget()
+    piano_frame.pack_forget()
+    main_menu_frame.pack(fill="both", expand=True)
+
+main_menu_frame = tk.Frame(root, bg="black")
+main_menu_frame.pack(fill="both", expand=True)
+
+welcome_label = tk.Label(main_menu_frame, text="Welcome to Cat Piano", font=("Arial", 24), bg="black", fg="white")
+welcome_label.pack(pady=30)
+
+normal_button = tk.Button(main_menu_frame, text="Normal", font=("Arial", 20), width=10, command=switch_to_piano, bg="black", fg="white")
+normal_button.pack(pady=10)
+
+crazy_button = tk.Button(main_menu_frame, text="Crazy", font=("Arial", 20), width=10, command=show_crazy_mode, bg="black", fg="white")
+crazy_button.pack(pady=10)
+
+piano_frame = tk.Frame(root)
+
+background_label = tk.Label(piano_frame, image=original_bg_image)
 background_label.place(relwidth=1, relheight=1)
 
-# Play sound function
-def play_sound(sound):
-    pygame.mixer.Sound.play(sound)
+def play_sound(key):
+    sound = sounds.get(key)
+    if sound:
+        pygame.mixer.Sound.play(sound)
 
-# Meow function with background change
 def meow():
-    # Change background to alternate image
     background_label.config(image=alternate_bg_image)
-    
-    # Play the meow sound
-    play_sound(meow_sound)
-
-    # Get the length of the meow sound in milliseconds and schedule the background change back to original
-    meow_duration = int(meow_sound.get_length() * 1000)
+    play_sound("meow")
+    meow_duration = int(sounds["meow"].get_length() * 1000)
     root.after(meow_duration, restore_background)
 
-# Restore original background function
 def restore_background():
     background_label.config(image=original_bg_image)
 
-# Handle keyboard press events
 def on_key_press(event):
-    if event.char == '1':
-        play_sound(keyboard1_sound)
-    elif event.char == '2':
-        play_sound(keyboard2_sound)
-    elif event.char == '3':
-        play_sound(keyboard3_sound)
-    elif event.char == '4':
-        play_sound(keyboard4_sound)
-    elif event.char == '5':
-        play_sound(keyboard5_sound)
-    elif event.char == '6':
-        play_sound(keyboard6_sound)
-    elif event.char == '7':
-        play_sound(keyboard7_sound)
-    elif event.char == '8':
-        play_sound(keyboard8_sound)
-    elif event.char == '9':
-        play_sound(keyboard9_sound)
-    elif event.char == '0':
-        play_sound(keyboard0_sound)
+    if event.char in "0123456789":
+        play_sound(event.char)
     elif event.char == ' ':
         meow()
 
 root.bind('<KeyPress>', on_key_press)
 
-# Create a frame for the keyboard buttons
-frame = tk.Frame(root)
-frame.pack(pady=20)
+keyboard_frame = tk.Frame(piano_frame)
+keyboard_frame.pack(pady=20)
 
-# Create black piano key buttons with white text
-button_width = 10  # Adjust width of the buttons
-button_height = 5  # Adjust height of the buttons
+for i in range(10):
+    tk.Button(keyboard_frame, text=str(i), width=10, height=5, command=lambda i=i: play_sound(str(i)), bg="black", fg="white").grid(row=0, column=i)
 
-button0 = tk.Button(frame, text="0", width=button_width, height=button_height, command=lambda: play_sound(keyboard0_sound), bg="black", fg="white")
-button0.grid(row=0, column=0)
-button1 = tk.Button(frame, text="1", width=button_width, height=button_height, command=lambda: play_sound(keyboard1_sound), bg="black", fg="white")
-button1.grid(row=0, column=1)
-button2 = tk.Button(frame, text="2", width=button_width, height=button_height, command=lambda: play_sound(keyboard2_sound), bg="black", fg="white")
-button2.grid(row=0, column=2)
-button3 = tk.Button(frame, text="3", width=button_width, height=button_height, command=lambda: play_sound(keyboard3_sound), bg="black", fg="white")
-button3.grid(row=0, column=3)
-button4 = tk.Button(frame, text="4", width=button_width, height=button_height, command=lambda: play_sound(keyboard4_sound), bg="black", fg="white")
-button4.grid(row=0, column=4)
-button5 = tk.Button(frame, text="5", width=button_width, height=button_height, command=lambda: play_sound(keyboard5_sound), bg="black", fg="white")
-button5.grid(row=0, column=5)
-button6 = tk.Button(frame, text="6", width=button_width, height=button_height, command=lambda: play_sound(keyboard6_sound), bg="black", fg="white")
-button6.grid(row=0, column=6)
-button7 = tk.Button(frame, text="7", width=button_width, height=button_height, command=lambda: play_sound(keyboard7_sound), bg="black", fg="white")
-button7.grid(row=0, column=7)
-button8 = tk.Button(frame, text="8", width=button_width, height=button_height, command=lambda: play_sound(keyboard8_sound), bg="black", fg="white")
-button8.grid(row=0, column=8)
-button9 = tk.Button(frame, text="9", width=button_width, height=button_height, command=lambda: play_sound(keyboard9_sound), bg="black", fg="white")
-button9.grid(row=0, column=9)
-
-# Add the Meow button centered below the keyboard buttons
-meow_button = tk.Button(root, text="Meow", width=20, height=button_height, command=meow, bg="black", fg="white")
+meow_button = tk.Button(piano_frame, text="Meow", width=20, height=5, command=meow, bg="black", fg="white")
 meow_button.pack(pady=20)
 
-# Run the tkinter main loop
-root.mainloop()
+back_to_menu_button = tk.Button(piano_frame, text="Back to Menu", font=("Arial", 14), command=return_to_menu, bg="black", fg="white")
+back_to_menu_button.pack(pady=10)
 
-# Quit pygame when done
+crazy_frame = tk.Frame(root, bg="black")
+crazy_label = tk.Label(crazy_frame, text="Crazy Mode - Coming Soon", font=("Arial", 24), fg="red", bg="black")
+crazy_label.pack(pady=100)
+
+crazy_back_button = tk.Button(crazy_frame, text="Back to Menu", font=("Arial", 14), command=return_to_menu, bg="black", fg="white")
+crazy_back_button.pack(pady=10)
+
+root.mainloop()
 pygame.quit()
