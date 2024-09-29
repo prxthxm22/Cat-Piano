@@ -5,13 +5,28 @@ import os
 
 pygame.mixer.init()
 
-sound_base_path = "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Sounds/"
-crazy_sound_base_path = "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/Crazy_Sounds/"
-image_base_path = "E:/Pratham College/BCA 3RD SEM/PYTHON/LAB/Project/"
+# Get the directory of the current script
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Initialize the Tkinter root window
+root = tk.Tk()
+root.geometry("800x361")
+root.title("Cat Piano")
+
+# Define relative paths
+sound_base_path = os.path.join(base_dir, "Sounds")
+crazy_sound_base_path = os.path.join(base_dir, "Crazy_Sounds")
+image_base_path = os.path.join(base_dir, "Images")
+
+# Load images
+original_bg_image = PhotoImage(file=os.path.join(image_base_path, "background.png"))
+alternate_bg_image = PhotoImage(file=os.path.join(image_base_path, "alternate_background.png"))
+
+# Sound files for Normal Mode
 sound_files = {str(i): os.path.join(sound_base_path, f"keyboard{i}.wav") for i in range(10)}
 sound_files["meow"] = os.path.join(sound_base_path, "meow.wav")
 
+# Sound files for Crazy Mode
 crazy_keys = ["A0", "A1", "A2", "B0", "B1", "B2", "C1", "C2", "C3", "D1", "D2", "E1", "F1", "G1", "G2"]
 crazy_filenames = [
     "Compressed - Meowsic_A0.L - 03.wav",
@@ -32,16 +47,11 @@ crazy_filenames = [
 ]
 crazy_sound_files = {key: os.path.join(crazy_sound_base_path, filename) for key, filename in zip(crazy_keys, crazy_filenames)}
 
+# Load sounds
 sounds = {key: pygame.mixer.Sound(file) for key, file in sound_files.items()}
 crazy_sounds = {key: pygame.mixer.Sound(file) for key, file in crazy_sound_files.items()}
 
-root = tk.Tk()
-root.geometry("800x361")
-root.title("Cat Piano")
-
-original_bg_image = PhotoImage(file=os.path.join(image_base_path, "background.png"))
-alternate_bg_image = PhotoImage(file=os.path.join(image_base_path, "alternate_background.png"))
-
+# Create frames
 main_menu_frame = tk.Frame(root, bg="black")
 piano_frame = tk.Frame(root)
 crazy_frame = tk.Frame(root)
