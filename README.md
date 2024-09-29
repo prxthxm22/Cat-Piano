@@ -155,11 +155,9 @@ Replace `background.png` and `alternate_background.png` in the `Images/` directo
 
 ## Credits
 
-- **Developer**: Your Name or Team Name
 - **Acknowledgments**:
   - Pygame community for the sound library.
   - Tkinter documentation for GUI guidelines.
-- **Institution**: Pratham College, BCA 3rd Semester, Python Lab Project
 
 ---
 
@@ -175,10 +173,6 @@ Enjoy making music with a catty twist!
 
 - **Pygame Documentation**: [https://www.pygame.org/docs/](https://www.pygame.org/docs/)
 - **Tkinter Documentation**: [https://docs.python.org/3/library/tkinter.html](https://docs.python.org/3/library/tkinter.html)
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
 
 ---
 
