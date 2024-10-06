@@ -13,6 +13,7 @@ root = tk.Tk()
 root.geometry("800x361")
 root.title("Cat Piano")
 
+
 # Define relative paths
 sound_base_path = os.path.join(base_dir, "Sounds")
 crazy_sound_base_path = os.path.join(base_dir, "Crazy_Sounds")
@@ -55,6 +56,7 @@ crazy_sounds = {key: pygame.mixer.Sound(file) for key, file in crazy_sound_files
 main_menu_frame = tk.Frame(root, bg="black")
 piano_frame = tk.Frame(root)
 crazy_frame = tk.Frame(root)
+coming_soon_frame = tk.Frame(root, bg="black")
 
 # Create background labels
 background_label = tk.Label(piano_frame, image=original_bg_image)
@@ -74,9 +76,16 @@ def show_crazy_mode():
     root.geometry("1250x564")
 
 def return_to_menu():
-    crazy_frame.pack_forget()
-    piano_frame.pack_forget()
-    main_menu_frame.pack(fill="both", expand=True)
+    crazy_frame.pack_forget()  
+    piano_frame.pack_forget()  
+    coming_soon_frame.pack_forget()  
+    main_menu_frame.pack(fill="both", expand=True) 
+    root.geometry("800x361")
+
+
+def show_coming_soon():
+    main_menu_frame.pack_forget()
+    coming_soon_frame.pack(fill="both", expand=True)
     root.geometry("800x361")
 
 # Main Menu UI
@@ -89,6 +98,16 @@ normal_button.pack(pady=10)
 
 crazy_button = tk.Button(main_menu_frame, text="Crazy", font=("Arial", 20), width=10, command=show_crazy_mode, bg="black", fg="white")
 crazy_button.pack(pady=10)
+
+guitar_tuner_button = tk.Button(main_menu_frame, text="AI Guitar Tuner", font=("Arial", 20), width=15, command=show_coming_soon, bg="black", fg="white")
+guitar_tuner_button.pack(pady=10)
+
+# Coming Soon UI
+coming_soon_label = tk.Label(coming_soon_frame, text="AI Guitar Tuner - Coming Soon!", font=("Arial", 30), bg="black", fg="white")
+coming_soon_label.pack(pady=100)
+
+back_to_menu_button_coming_soon = tk.Button(coming_soon_frame, text="Back to Menu", font=("Arial", 14), command=return_to_menu, bg="black", fg="white")
+back_to_menu_button_coming_soon.pack(pady=20)
 
 # Piano UI
 def play_sound(key):
